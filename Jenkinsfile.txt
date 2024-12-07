@@ -1,0 +1,39 @@
+pipeline {
+    agent any
+
+    stages {
+        stage('Checkout') {
+            steps {
+                // Clonar el repositorio desde GitHub
+                git branch: 'main', url: 'https://github.com/kimelivar/enviospaquetes.git'
+            }
+        }
+
+        stage('Build') {
+            steps {
+                // Construir la aplicación (si es necesario, según el lenguaje de tu app)
+                sh 'npm install'  // Para aplicaciones Node.js
+                // O bien para aplicaciones Java:
+                // sh 'mvn clean install'
+            }
+        }
+
+        stage('Test') {
+            steps {
+                // Ejecutar pruebas (si las tienes)
+                sh 'npm test'  // Para aplicaciones Node.js
+                // O para aplicaciones Java:
+                // sh 'mvn test'
+            }
+        }
+
+        stage('Deploy') {
+            steps {
+                // Aquí va el paso de despliegue. Puede ser a Docker, servidor o servicio en la nube
+                sh 'docker build -t paquete-rastreo .'   // Si estás usando Docker
+                sh 'docker run -p 8080:8080 paquete-rastreo'  // Para ejecutar el contenedor
+                
+            }
+        }
+    }
+}
